@@ -7,7 +7,6 @@ import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.SelectionEvent.SelectionListener;
-
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
@@ -30,29 +29,36 @@ import javax.servlet.annotation.WebServlet;
 @Widgetset("com.mycompany.parcautomobile.MyAppWidgetset")
 public class MyUI extends UI {
 
-    private Grid contactList = new Grid();
-    private Table contactTable = new Table();
-
+    private static Grid contactList = new Grid();
+    private Grid vc = new Grid();
+    private Grid grillev = new Grid();
+ 
+    
     @Override
     protected void init(VaadinRequest vaadinrequest) {
-        configureComponents();  // configuration des composants
-        buildLayout();          //  construction de la vue
+
+        configureComponents();
+        buildLayout();// configuration des composants
+        //  construction de la vue
     }
 
     private void configureComponents() {
-
-        // Chargement des données.
-        Vehicule vehicule1 = new Vehicule(1, "Renault", "Clio", 10000);
-        Vehicule vehicule2 = new Vehicule(2, "Audi", "A8", 12500);
-        Vehicule vehicule3 = new Vehicule(3, "Toyota", "Yaris", 15005);
-
+        Init.getInstance();
+        vc.setContainerDataSource(Vehicule.getPb(15000));
+       vc.setColumnOrder("Marque", "Modele", "Prix", "Gamme");
+        vc.removeColumn("id");
+        vc.removeColumn("Gamme");
+        vc.setSizeFull();
+     
+       
         contactList.setContainerDataSource(Vehicule.getVehicules());
 
-        //contactTable.setContainerDataSource(new BeanItemContainer<>( Vehicule.class));
-        contactList.setColumnOrder("marque", "modele", "prix");  // choisir l'ordre des colonnes
-        contactList.removeColumn("id");  // masquer la colonne
-        //  contactList.setSelectionMode(Grid.SelectionMode.SINGLE);
+        contactList.setColumnOrder("Id", "Marque", "Modele", "Prix", "Gamme");
         contactList.setSizeFull();
+
+        grillev.setContainerDataSource(Visiteur.getPersonnes());
+        grillev.setSizeFull();
+        
 
     }
 
@@ -61,10 +67,16 @@ public class MyUI extends UI {
         final VerticalLayout layout = new VerticalLayout();
         layout.setMargin(true);
         // ajouts de composants
-        layout.addComponent(new Label(" Parc de véhicule"));
+        layout.addComponent(new Label(" Liste des véhicules :"));
         layout.addComponent(contactList);
+
+        layout.addComponent(new Label("Les Visiteurs :"));
+        layout.addComponent(grillev);
+
+        layout.addComponent(new Label("les Voitures de moins de 15000 euros :"));
+        layout.addComponent(vc);
         //layout.addComponent(contactTable);
-        setContent(layout);  // affectation de la vue
+        setContent(layout);
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
