@@ -29,10 +29,11 @@ import javax.servlet.annotation.WebServlet;
 @Widgetset("com.mycompany.parcautomobile.MyAppWidgetset")
 public class MyUI extends UI {
 
-    private static Grid contactList = new Grid();
-    private Grid vc = new Grid();
-    private Grid grillev = new Grid();
- 
+    private static final Grid contactList = new Grid();
+    private final Grid vc = new Grid();
+    private final Grid grillev = new Grid();
+    private final Grid vh = new Grid();
+    private final double prix = 15000;
     
     @Override
     protected void init(VaadinRequest vaadinrequest) {
@@ -44,16 +45,21 @@ public class MyUI extends UI {
 
     private void configureComponents() {
         Init.getInstance();
-        vc.setContainerDataSource(Vehicule.getPb(15000));
-       vc.setColumnOrder("Marque", "Modele", "Prix", "Gamme");
+        vc.setContainerDataSource(Vehicule.getVehiculesPrixBas(prix));
+        vc.setColumnOrder("marque", "modele", "prix", "gamme");
         vc.removeColumn("id");
-        vc.removeColumn("Gamme");
+        vc.removeColumn("gamme");
         vc.setSizeFull();
      
-       
+        vh.setContainerDataSource(Vehicule.getVehiculesPrixHaut(prix));
+        vh.setColumnOrder("marque", "modele", "prix", "gamme");
+        vh.removeColumn("id");
+        vh.removeColumn("gamme");
+        vh.setSizeFull();
+        
         contactList.setContainerDataSource(Vehicule.getVehicules());
 
-        contactList.setColumnOrder("Id", "Marque", "Modele", "Prix", "Gamme");
+        contactList.setColumnOrder("id", "marque", "modele", "prix", "gamme");
         contactList.setSizeFull();
 
         grillev.setContainerDataSource(Visiteur.getPersonnes());
@@ -73,8 +79,11 @@ public class MyUI extends UI {
         layout.addComponent(new Label("Les Visiteurs :"));
         layout.addComponent(grillev);
 
-        layout.addComponent(new Label("les Voitures de moins de 15000 euros :"));
+        layout.addComponent(new Label("Parc de véhicule coutant moins de "+ prix +" €"));
         layout.addComponent(vc);
+        
+        layout.addComponent(new Label("Parc de véhicule coutant plus de "+ prix +" €"));
+        layout.addComponent(vh);
         //layout.addComponent(contactTable);
         setContent(layout);
     }

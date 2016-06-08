@@ -26,8 +26,7 @@ public class Vehicule implements java.io.Serializable {
     private double prix;
     private String gamme;
     private static BeanItemContainer<Vehicule> vehicules = new BeanItemContainer<>(Vehicule.class);
-    private static BeanItemContainer<Vehicule> vehiculesPC = new BeanItemContainer<>(Vehicule.class);
-
+    
     public Vehicule() {
     }
 
@@ -85,17 +84,30 @@ public class Vehicule implements java.io.Serializable {
         return vehicules;
     }
 
-    public static BeanItemContainer<Vehicule> getPb(int prix) {
-
-        List<Vehicule> lv;
-        lv = (List<Vehicule>) vehicules.getItemIds();
-
-        for (Vehicule unV : lv) {
-            if (unV.getPrix() < prix) {
-                vehiculesPC.addBean(unV);
+     /**
+     *
+     * @param prix
+     * @return la collection de véhicule ayant un prix suppérieur a la variable prix
+     */
+    public static BeanItemContainer<Vehicule> getVehiculesPrixHaut(double prix) {
+        BeanItemContainer<Vehicule> lesVehiculesPrixHaut = new BeanItemContainer<>(Vehicule.class);
+        List<Vehicule> listeVehicule = vehicules.getItemIds();
+        for( Vehicule unVehicule : listeVehicule){
+            if(unVehicule.getPrix()> prix){
+                lesVehiculesPrixHaut.addBean(unVehicule);
             }
-        }
-        return vehiculesPC;
+        } 
+        return lesVehiculesPrixHaut;
+    }
+    public static BeanItemContainer<Vehicule> getVehiculesPrixBas(double prix) {
+        BeanItemContainer<Vehicule> lesVehiculesPrixBas = new BeanItemContainer<>(Vehicule.class);
+        List<Vehicule> listeVehicule = vehicules.getItemIds();
+        for( Vehicule unVehicule : listeVehicule){
+            if(unVehicule.getPrix()< prix){
+                lesVehiculesPrixBas.addBean(unVehicule);
+            }
+        } 
+        return lesVehiculesPrixBas;
     }
 
     
